@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class InteractionWithRope : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _player;
     [SerializeField] private float _forcePush;
@@ -20,7 +18,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0) && _joint.connectedBody!=null)
+        if(Input.GetMouseButtonDown(0))
         {
             _joint.connectedBody = null;
             _joint.enabled = false;
@@ -43,6 +41,5 @@ public class Player : MonoBehaviour
     {
         _renderer.color = Color.Lerp(Color.red, Color.green, Mathf.Sin(Time.timeSinceLevelLoad));
     }
-
 
 }
