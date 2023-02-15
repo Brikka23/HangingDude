@@ -8,13 +8,11 @@ public class InteractionWithRope : MonoBehaviour
     [SerializeField] private Rigidbody2D _player;
     [SerializeField] private float _forcePush;
 
-    private SpriteRenderer _renderer;
     private HingeJoint2D _joint;
     private Rigidbody2D _lastPartOfRope;
 
     private void Start()
     {
-        _renderer = GetComponent<SpriteRenderer>();
         _joint = GetComponent<HingeJoint2D>();
         _player.AddForce(Vector3.left * _forcePush, ForceMode2D.Impulse);
     }
