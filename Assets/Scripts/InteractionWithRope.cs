@@ -1,5 +1,8 @@
 using UnityEngine;
 
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(HingeJoint2D))]
 public class InteractionWithRope : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _player;
@@ -23,7 +26,6 @@ public class InteractionWithRope : MonoBehaviour
             _joint.connectedBody = null;
             _joint.enabled = false;
         }
-        changeColorPlayer();
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -36,10 +38,4 @@ public class InteractionWithRope : MonoBehaviour
             _player.AddForce(Vector3.right * _forcePush, ForceMode2D.Impulse);
         }
     }
-
-    private void changeColorPlayer()
-    {
-        _renderer.color = Color.Lerp(Color.red, Color.green, Mathf.Sin(Time.timeSinceLevelLoad));
-    }
-
 }
