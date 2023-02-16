@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 87896533}
-  _forcePush: 130
+  _pushForce: 150
 --- !u!1 &99163767
 GameObject:
   m_ObjectHideFlags: 0
