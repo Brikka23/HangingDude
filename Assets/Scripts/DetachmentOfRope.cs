@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(HingeJoint2D))]
-public class DetachmentOfRope: MonoBehaviour
+public class DetachmentOfRope : MonoBehaviour
 {
 
     private HingeJoint2D _joint;
