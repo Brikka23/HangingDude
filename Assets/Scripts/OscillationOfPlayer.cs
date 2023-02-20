@@ -4,14 +4,15 @@ using UnityEngine;
 public class OscillationOfPlayer : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rigidbodyOfPlayer;
-    [SerializeField] private float _startPushForce;
+    [SerializeField] private float _forceOfStartPush;
+
     private float _pushForce;
 
     private void Start()
     {
-        _pushForce = _startPushForce;
+        _pushForce = _forceOfStartPush;
         PushOfPlayer(Vector3.left);
-        _pushForce = _startPushForce /  2.0f;
+        _pushForce = _forceOfStartPush / 2.0f;
     }
 
     public void PushOfPlayer(Vector3 _vector)
