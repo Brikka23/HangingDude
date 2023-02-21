@@ -4,24 +4,25 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Slide : MonoBehaviour
 {
-    [SerializeField] private float _minGroundNormalY = .65f;
+    private const float ShellRadius = 0.01f;
+    private const float MinMoveDistance = 0.001f;
+
+    private readonly RaycastHit2D[] _hitBuffer = new RaycastHit2D[16];
+    private readonly List<RaycastHit2D> _hitBufferList = new List<RaycastHit2D>(16);
+
+    [SerializeField] private float _minGroundNormalY = 0.65f;
     [SerializeField] private float _gravityModifier = 1f;
-    [SerializeField] private Vector2 _velocity;
+    [SerializeField] private float _jumpForce = 5f;
+    [SerializeField] private float _speed = 5f;
     [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private float _speed;
-    [SerializeField] private float _jumpForce;
 
     private Rigidbody2D _rb2d;
+    private bool _grounded;
 
+    private Vector2 _velocity;
     private Vector2 _groundNormal;
     private Vector2 _targetVelocity;
-    private bool _grounded;
     private ContactFilter2D _contactFilter;
-    private RaycastHit2D[] _hitBuffer = new RaycastHit2D[16];
-    private List<RaycastHit2D> _hitBufferList = new List<RaycastHit2D>(16);
-
-    private const float MinMoveDistance = 0.001f;
-    private const float ShellRadius = 0.01f;
 
     private void OnEnable()
     {
@@ -37,32 +38,35 @@ public class Slide : MonoBehaviour
 
     private void Update()
     {
-        Vector2 alongSurface = Vector2.Perpendicular(_groundNormal);
-
-        _targetVelocity = alongSurface * _speed;
-
-        if(_grounded && Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && _grounded)
         {
-            JumpPlayer();
+            Jump();
         }
     }
 
     private void FixedUpdate()
     {
-        _velocity += _gravityModifier * Physics2D.gravity * Time.deltaTime;
-        _velocity.x = _targetVelocity.y;
-
+        SetVelocity();
         _grounded = false;
 
         Vector2 deltaPosition = _velocity * Time.deltaTime;
-        Vector2 moveAlongGround = new Vector2(_groundNormal.y, -_groundNormal.x);
-        Vector2 move = moveAlongGround * deltaPosition.x;
+        Vector2 move = GetMovementSide(deltaPosition);
 
         Movement(move, false);
-
         move = Vector2.up * deltaPosition.y;
-
         Movement(move, true);
+    }
+
+    private void SetVelocity()
+    {
+        _targetVelocity = _groundNormal * _speed;
+
+        _velocity += _gravityModifier * Physics2D.gravity * Time.deltaTime;
+        _velocity.x = _targetVelocity.x; ;
+    }
+
+    private void Jump() {
+        _velocity += Vector2.up * _jumpForce;
     }
 
     private void Movement(Vector2 move, bool yMovement)
@@ -96,7 +100,7 @@ public class Slide : MonoBehaviour
                 float projection = Vector2.Dot(_velocity, currentNormal);
                 if (projection < 0)
                 {
-                    _velocity = _velocity - projection * currentNormal;
+                    _velocity -= projection * currentNormal;
                 }
 
                 float modifiedDistance = _hitBufferList[i].distance - ShellRadius;
@@ -104,10 +108,14 @@ public class Slide : MonoBehaviour
             }
         }
 
-        _rb2d.position = _rb2d.position + move.normalized * distance;
+        _rb2d.position += move.normalized * distance;
     }
 
-    private void JumpPlayer() {
-        _rb2d.velocity = Vector2.up * _jumpForce;
+    private Vector2 GetMovementSide(Vector2 deltaPosition)
+    {
+        Vector2 moveAlongGround = new Vector2(_groundNormal.y, -_groundNormal.x);
+
+        return moveAlongGround * deltaPosition.x;
     }
+
 }
