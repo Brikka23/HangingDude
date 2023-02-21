@@ -38,6 +38,7 @@ public class Slide : MonoBehaviour
 
     private void Update()
     {
+
         if(Input.GetKeyDown(KeyCode.Space) && _grounded)
         {
             Jump();
@@ -59,10 +60,11 @@ public class Slide : MonoBehaviour
 
     private void SetVelocity()
     {
-        _targetVelocity = _groundNormal * _speed;
+        Vector2 alongSurface = Vector2.Perpendicular(_groundNormal);
+        _targetVelocity = alongSurface * _speed;
 
         _velocity += _gravityModifier * Physics2D.gravity * Time.deltaTime;
-        _velocity.x = _targetVelocity.x; ;
+        _velocity.x = _targetVelocity.y;
     }
 
     private void Jump() {
